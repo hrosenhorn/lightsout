@@ -17,6 +17,7 @@ Preload.prototype.preload = function () {
     this.game.load.image("buttonBlue","assets/buttonBlue.png");
     this.game.load.bitmapFont('spacefont', 'assets/fonts/paddington.png', 'assets/fonts/paddington.fnt');
 
+    this.game.load.image('meteor', 'assets/meteorGrey_big4.png');
     this.game.load.image('ufoRed', 'assets/ufoRed.png');
     this.game.load.image('ufoGreen', 'assets/ufoGreen.png');
     this.game.load.image('ufoBlue', 'assets/ufoBlue.png');
@@ -28,6 +29,7 @@ Preload.prototype.preload = function () {
     // Audio stuff
     this.game.load.audio('opening', ['assets/sound/Opening.ogg']);
     this.game.load.audio('levelmusic1', ['assets/sound/Fecit-potentiam.ogg']);
+    this.game.load.audio('explode', ['assets/sound/136765_mitchelk_explode001.mp3']);
     this.game.load.audio('levelmusic2', ['assets/sound/Danger.ogg']);
 };
 

@@ -1,11 +1,13 @@
 var Background = require("../Background");
 var BallSystem = require("../BallSystem");
+var Poker = require("../Poker");
 
 var background = null;
 var ballSystem = null;
 var gameOver;
 var fireButton;
 var splitText;
+var poker;
 
 var Game = function (game) {
     this.game = game;
@@ -21,10 +23,12 @@ Game.prototype.create = function () {
     this.game.world.setBounds(0, 0, this.game.width, this.game.height);
 
     background = new Background(this.game);
-
     this.game.world.add(background);
 
-    ballSystem = new BallSystem(this.game);
+    poker = new Poker(this.game);
+    this.game.world.add(poker);
+
+    ballSystem = new BallSystem(this.game, poker);
 
     //  Game over text
     gameOver = this.game.add.bitmapText(this.game.width / 2, this.game.height / 2, 'spacefont', 'Victory!', 110);
@@ -50,21 +54,16 @@ Game.prototype.create = function () {
     };
     splitText.render();
     splitText.fixedToCamera = true;
-
-    // leftEmitter = this.game.add.emitter(this.game.world.centerX, this.game.world.centerY);
-    // leftEmitter.bounce.setTo(0.5, 0.5);
-    // leftEmitter.setXSpeed(100, 200);
-    // leftEmitter.setYSpeed(-50, 50);
-    // leftEmitter.makeParticles('turret', 0, 5, true, true);
-    // leftEmitter.start(false, 5000, 20);
-
 };
 
 Game.prototype.update = function () {
     background.update();
     splitText.render();
+    poker.update();
 
-    this.game.physics.arcade.collide(ballSystem.turrets, ballSystem.turrets, ballSystem.collide, null, null);
+    this.game.physics.arcade.collide(ballSystem.turrets, ballSystem.turrets, ballSystem.collide, null, ballSystem);
+
+    this.game.physics.arcade.collide(ballSystem.turrets, poker, null, null, null);
 
     //  Game over?
     

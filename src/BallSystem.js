@@ -14,10 +14,11 @@ function createBall() {
     }
 }
 
-function BallSystem(game) {
+function BallSystem(game, poker) {
     this.game = game;
     this.spawnTime = 10;
     this.score = 0;
+    this.poker = poker;
 
     this.turrets = this.game.add.group();
     this.turrets.enableBody = true;
@@ -31,7 +32,18 @@ function BallSystem(game) {
     }
     this.turrets.callAll('kill');
 
-
+    this.explodeSound = this.game.add.audio('explode');
+    this.explosions = null;
+    //  An explosion pool
+    this.explosions = this.game.add.group();
+    this.explosions.enableBody = true;
+    this.explosions.physicsBodyType = Phaser.Physics.ARCADE;
+    this.explosions.createMultiple(30, 'explosion');
+    this.explosions.setAll('anchor.x', 0.5);
+    this.explosions.setAll('anchor.y', 0.5);
+    this.explosions.forEach(function (explosion) {
+        explosion.animations.add('explosion');
+    });
 
     var self = this;
     this.turrets.onChildInputDown.add(function (turret, pointer) {
@@ -47,6 +59,18 @@ function BallSystem(game) {
 }
 
 BallSystem.constructor = BallSystem;
+
+BallSystem.prototype.explode = function (turret) {
+    var explosion = this.explosions.getFirstExists(false);
+    if (explosion) {
+        explosion.reset(turret.body.x, turret.body.y);
+        explosion.alpha = 0.7;
+        explosion.play('explosion', 30, false, true);
+        this.explodeSound.play();
+    }
+
+    turret.kill();
+};
 
 BallSystem.prototype.clone = function (origTurret) {
     var turret = this.turrets.getFirstExists(false);
@@ -66,16 +90,11 @@ BallSystem.prototype.createBall = createBall;
 
 BallSystem.prototype.collide = function (first, second) {
     if (first.color == second.color) {
-        first.kill();
-        second.kill();
+        this.explode(first);
+        this.explode(second);
     } else {
-        //console.log("Collision occured between ", first.color, "and", second.color);
-
         first.updateColorIndex(first.colorIndex + 1);
         second.updateColorIndex(second.colorIndex + 1);
-        //console.log("They now have ", first.color, "and", second.color);
-
-
     }
 
 };
