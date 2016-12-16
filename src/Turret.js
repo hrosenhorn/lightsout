@@ -25,7 +25,7 @@ Turret.constructor = Turret;
 
 Turret.prototype.adjustDirection = function (angle) {
     this.body.angle += angle;
-    this.game.physics.arcade.velocityFromAngle(this.body.angle, 800, this.body.velocity);
+    this.game.physics.arcade.velocityFromAngle(this.body.angle, 500, this.body.velocity);
 };
 
 
